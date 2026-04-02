@@ -13,3 +13,6 @@ drizzle/
 .trigger/
 .source/
 .next/
+.aidesigner/*
+!.aidesigner/.gitkeep
+.claude/
