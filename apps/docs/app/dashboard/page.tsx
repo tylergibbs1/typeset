@@ -40,43 +40,7 @@ export default async function DashboardPage() {
     .limit(10)
 
   return (
-    <main className="max-w-4xl mx-auto px-4" style={{ paddingTop: 'var(--space-12)', paddingBottom: 'var(--space-12)' }}>
-      <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-8)' }}>
-        <div className="flex items-center gap-4">
-          {user.user_metadata.avatar_url && (
-            <img
-              src={user.user_metadata.avatar_url}
-              alt=""
-              width={40}
-              height={40}
-              style={{ borderRadius: 'var(--radius-full)' }}
-            />
-          )}
-          <div>
-            <h1 style={{ fontSize: '1.5rem', fontWeight: 600 }}>Dashboard</h1>
-            <p style={{ color: 'var(--muted)', fontSize: '14px' }}>
-              {user.user_metadata.user_name || user.email}
-            </p>
-          </div>
-        </div>
-        <form action="/auth/signout" method="POST">
-          <button
-            type="submit"
-            style={{
-              background: 'transparent',
-              color: 'var(--muted)',
-              border: '1px solid var(--border)',
-              padding: '8px 16px',
-              borderRadius: 'var(--radius-md)',
-              fontSize: '14px',
-              cursor: 'pointer',
-            }}
-          >
-            Sign out
-          </button>
-        </form>
-      </div>
-
+    <main className="max-w-4xl mx-auto px-4" style={{ paddingTop: 'var(--space-8)', paddingBottom: 'var(--space-12)' }}>
       <KeyManager orgId={org!.id} keys={keys || []} runs={runs || []} />
     </main>
   )

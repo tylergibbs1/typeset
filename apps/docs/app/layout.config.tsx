@@ -15,5 +15,11 @@ export const baseOptions: BaseLayoutProps = {
       </span>
     ),
   },
+  links: [
+    {
+      text: "Dashboard",
+      url: "/dashboard",
+    },
+  ],
   githubUrl: "https://github.com/tylergibbs1/typeset",
 };
