@@ -1,0 +1,36 @@
+---
+title: Pipeline Runs
+description: Every render creates a run with full lineage
+---
+
+# Pipeline Runs
+
+Every render creates a **run** — a record of the complete pipeline execution with full lineage.
+
+```typescript
+interface DocumentRun {
+  id: string              // run_abc123
+  status: "queued" | "rendering" | "verifying" | "completed" | "failed"
+  engine: "html" | "typst"
+  templateHash: string    // SHA-256 of template content
+  dataHash: string        // SHA-256 of input data
+  pages: number
+  sizeBytes: number
+  renderTimeMs: number
+  verification: {
+    status: "passed" | "failed" | "skipped"
+    score: number         // 0-1 confidence
+    issues: string[]
+  }
+  createdAt: string
+  completedAt: string
+}
+```
+
+## What runs unlock
+
+- **"What input produced this PDF?"** — full lineage via template + data hashes
+- **"Re-render with new data"** — same template, new data hash
+- **"Diff versions"** — compare two runs with the same template
+- **Compliance and audit trails** — every run is stored with its verification result
+- **Debugging failed renders** — error type and detail stored on the run

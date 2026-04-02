@@ -1,0 +1,52 @@
+---
+title: Verification
+description: Closed-loop OCR verification of rendered documents
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Verification
+
+The core differentiator: render a document, OCR it, compare every field against the input data.
+
+```
+render(template + data) → PDF → Mistral OCR → compare fields → score
+```
+
+## How it works
+
+1. You render a document with `verify: true`
+2. Typeset renders the PDF normally
+3. The PDF is sent to Mistral OCR (`mistral-ocr-latest`)
+4. Every input field is checked against the OCR output
+5. A score (0-1) and list of issues are stored on the run
+
+## Verification result
+
+```json
+{
+  "verification": {
+    "status": "passed",
+    "score": 1.0,
+    "issues": []
+  }
+}
+```
+
+If a field is missing:
+
+```json
+{
+  "verification": {
+    "status": "failed",
+    "score": 0.85,
+    "issues": [
+      "Missing field \"vendorName\": expected \"Acme Corp\""
+    ]
+  }
+}
+```
+
+<Callout type="warn" title="Cost">
+Verification uses Mistral OCR which is billed per page. Only enable it when you need the guarantee.
+</Callout>

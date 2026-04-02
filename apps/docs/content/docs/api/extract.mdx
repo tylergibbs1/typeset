@@ -1,0 +1,51 @@
+---
+title: POST /v1/extract
+description: Extract structured data from a document via OCR
+---
+
+# POST /v1/extract
+
+Extracts text, tables, and structured data from a document using Mistral OCR.
+
+## Request
+
+```json
+{
+  "document": {
+    "type": "url",
+    "url": "https://example.com/invoice.pdf"
+  },
+  "options": {
+    "tableFormat": "html"
+  }
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `document.type` | `"url"` \| `"base64"` | Document source |
+| `document.url` | string | URL to the document (when type is `"url"`) |
+| `document.data` | string | Base64-encoded document (when type is `"base64"`) |
+| `options.tableFormat` | `"html"` \| `"markdown"` \| `null` | Table extraction format. Use `null` to keep tables inline. |
+
+## Response
+
+```json
+{
+  "data": {
+    "pages": [
+      {
+        "index": 0,
+        "markdown": "# Invoice\n\nInvoice #: INV-001\n...",
+        "images": [],
+        "tables": []
+      }
+    ],
+    "annotation": null,
+    "usage": {
+      "pagesProcessed": 1,
+      "docSizeBytes": 45000
+    }
+  }
+}
+```

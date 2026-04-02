@@ -11,3 +11,5 @@ drizzle/
 .storage/
 .mcp.json
 .trigger/
+.source/
+.next/

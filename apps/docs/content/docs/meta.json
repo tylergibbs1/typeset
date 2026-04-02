@@ -1,0 +1,17 @@
+{
+  "title": "Guide",
+  "pages": [
+    "index",
+    "getting-started",
+    "---Concepts---",
+    "concepts/engines",
+    "concepts/runs",
+    "concepts/verification",
+    "---API Reference---",
+    "api/render",
+    "api/extract",
+    "api/templates",
+    "api/runs",
+    "api/authentication"
+  ]
+}

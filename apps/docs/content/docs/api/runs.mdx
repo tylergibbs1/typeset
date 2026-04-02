@@ -1,0 +1,25 @@
+---
+title: Runs
+description: List and inspect pipeline runs
+---
+
+# Runs
+
+## GET /v1/runs
+
+List pipeline runs with pagination and filtering.
+
+```
+GET /v1/runs?status=completed&limit=20
+```
+
+| Param | Type | Description |
+|-------|------|-------------|
+| `status` | string | Filter by status |
+| `limit` | number | Max results (1-100, default 20) |
+| `cursor` | string | Pagination cursor |
+| `template_id` | string | Filter by template |
+
+## GET /v1/runs/:id
+
+Returns the full run with lineage, verification, and metadata.
