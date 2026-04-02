@@ -1,0 +1,178 @@
+@import 'tailwindcss';
+@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/preset.css';
+
+:root {
+  /* ── Core ───────────────────────────────── */
+  --ink: #0f172a;
+  --ink-light: #334155;
+  --paper: #fafaf9;
+  --paper-warm: #f5f3ef;
+  --white: #ffffff;
+
+  /* ── Accent — Burnt Orange ──────────────── */
+  --accent: #ea580c;
+  --accent-hover: #c2410c;
+  --accent-pressed: #9a3412;
+  --accent-soft: #fff7ed;
+  --accent-border: #fed7aa;
+
+  /* ── Neutral ────────────────────────────── */
+  --muted: #64748b;
+  --subtle: #94a3b8;
+  --border: #e7e5e4;
+  --border-strong: #d6d3d1;
+
+  /* ── Semantic ───────────────────────────── */
+  --success: #16a34a;
+  --success-soft: #f0fdf4;
+  --error: #dc2626;
+  --error-soft: #fef2f2;
+  --warning: #d97706;
+  --warning-soft: #fffbeb;
+  --info: #2563eb;
+  --info-soft: #eff6ff;
+
+  /* ── Code / dark surfaces ───────────────── */
+  --code-bg: #1e293b;
+  --code-text: #e2e8f0;
+  --code-comment: #64748b;
+  --code-keyword: #f97316;
+  --code-string: #34d399;
+  --code-function: #60a5fa;
+
+  /* ── Spacing (8px grid) ─────────────────── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+
+  /* ── Radius ─────────────────────────────── */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  /* ── Shadows ────────────────────────────── */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 2px 8px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 8px 24px rgba(15, 23, 42, 0.08), 0 2px 8px rgba(15, 23, 42, 0.04);
+
+  /* ── Motion ─────────────────────────────── */
+  --duration-fast: 100ms;
+  --duration-normal: 150ms;
+  --duration-slow: 250ms;
+  --easing: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ── Fonts ──────────────────────────────── */
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Consolas', monospace;
+  --font-display: 'Space Grotesk', 'Inter', sans-serif;
+
+  /* ── Fumadocs overrides ─────────────────── */
+  --fd-background: var(--paper);
+  --fd-foreground: var(--ink);
+  --fd-primary: var(--accent);
+  --fd-primary-foreground: var(--white);
+  --fd-muted-foreground: var(--muted);
+  --fd-border: var(--border);
+  --fd-accent: var(--accent-soft);
+  --fd-accent-foreground: var(--accent-pressed);
+}
+
+.dark {
+  --ink: #e2e8f0;
+  --ink-light: #cbd5e1;
+  --paper: #0f172a;
+  --paper-warm: #1e293b;
+  --white: #1e293b;
+  --border: #334155;
+  --border-strong: #475569;
+  --muted: #94a3b8;
+  --subtle: #64748b;
+  --accent: #f97316;
+  --code-bg: #0f172a;
+
+  --fd-background: var(--paper);
+  --fd-foreground: var(--ink);
+  --fd-primary: var(--accent);
+  --fd-primary-foreground: #ffffff;
+  --fd-muted-foreground: var(--muted);
+  --fd-border: var(--border);
+  --fd-accent: #1c1917;
+  --fd-accent-foreground: #fed7aa;
+}
+
+/* ── Typography ──────────────────────────── */
+
+body {
+  font-family: var(--font-body);
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+/* Logo wordmark */
+.typeset-logo {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+/* Links */
+a:not([class]) {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color var(--duration-normal) var(--easing);
+}
+
+a:not([class]):hover {
+  text-decoration: underline;
+  color: var(--accent-hover);
+}
+
+/* ── Code blocks — sharp corners, terminal feel ── */
+
+pre {
+  background: var(--code-bg) !important;
+  color: var(--code-text);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.6;
+  border-radius: 0 !important;
+  border: 1px solid #334155 !important;
+}
+
+code:not(pre code) {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--paper-warm);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  color: var(--ink-light);
+}
+
+.dark code:not(pre code) {
+  background: #1e293b;
+}
+
+/* ── Focus indicators ────────────────────── */
+
+*:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* ── Reduced motion ──────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+  }
+}
