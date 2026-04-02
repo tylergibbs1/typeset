@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "bun run --hot src/index.ts",
+    "dev:local": "bun run --hot src/local.ts",
     "build": "bun build --compile --minify src/index.ts --outfile typeset-api",
     "typecheck": "tsc --noEmit"
   },

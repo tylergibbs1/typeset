@@ -5,7 +5,9 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./schema": "./src/schema.ts"
+    "./schema": "./src/schema.ts",
+    "./sqlite": "./src/sqlite.ts",
+    "./sqlite-schema": "./src/sqlite-schema.ts"
   },
   "scripts": {
     "db:generate": "bunx drizzle-kit generate",
