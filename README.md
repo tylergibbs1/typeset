@@ -1,6 +1,4 @@
-<h3 align="center">
-  <code style="font-size: 2em; font-weight: 600; letter-spacing: -0.02em;">typeset</code>
-</h3>
+<h1 align="center"><code>typeset</code></h1>
 
 <p align="center">
   Deterministic document pipelines. Render, verify, extract.
@@ -17,49 +15,11 @@
 
 ---
 
-**Typeset** is a document computation engine. Every document generation is a pipeline run: deterministic, auditable, verifiable. The same input + template always produces the same output. The output is verified against the input via OCR. Open source and available as a hosted service.
-
-```
-input data → template → render → verify → extract → loop
-```
-
----
-
-## Why Typeset?
-
-- **Two rendering engines**: HTML (Playwright) for web-native templates, Typst for native pagination and 3x smaller PDFs
-- **AI layout intelligence**: GPT-5.4 analyzes your template and optimizes page breaks, table splitting, orphan/widow prevention
-- **Closed-loop verification**: Render a PDF, OCR it with Mistral, compare every field against input data — store the score
-- **Full lineage**: Every render creates a run with template hash, data hash, verification result, and signed URL
-- **Deterministic**: Same input + template = same output. Always.
-- **Structured extraction**: Pull data from any document with schema-driven OCR
-- **Open source**: Engine, SDK, CLI, and database schema are MIT-licensed
-
----
-
-## Feature Overview
-
-**Core Endpoints**
-
-| Feature | Description |
-|---------|-------------|
-| [**Render**](#render) | HTML or Typst template + data → PDF with AI layout optimization |
-| [**Verify**](#verify) | OCR a rendered PDF and compare every field against the input |
-| [**Extract**](#extract) | Pull structured data from any document via Mistral OCR |
-
-**More**
-
-| Feature | Description |
-|---------|-------------|
-| **Async Render** | Queue long-running renders with webhook delivery |
-| **Templates** | Save, version, and reuse templates with content hashing |
-| **Template from Doc** | Upload a PDF, get an HTML or Typst template back |
-| **Idempotency** | Same `Idempotency-Key` returns the same response without re-rendering |
-| **Run Lineage** | Full audit trail — what input produced this PDF, when, with what result |
-
----
+**Typeset** turns a template plus JSON data into a PDF, then checks the PDF against the data with OCR. It is for teams generating invoices, contracts, and reports who need the same input to always produce the same, verifiable output. Open source and available as a hosted service.
 
 ## Quick Start
+
+These examples call the hosted API. To run everything on your machine instead, see [Self-Hosting](#self-hosting).
 
 ### Render a PDF
 
@@ -115,9 +75,6 @@ curl -X POST https://api.typeset.dev/v1/render \
 # Local render
 typeset render template.html data.json -o invoice.pdf
 
-# Typst render
-typeset render template.typ data.json -o invoice.pdf --engine typst
-
 # Remote render via API
 typeset render template.html data.json --remote --api-key ts_live_...
 ```
@@ -160,7 +117,43 @@ Response includes verification:
 }
 ```
 
----
+## How It Works
+
+Every document generation is a pipeline run: deterministic, auditable, verifiable. The same input + template always produces the same output, and the output is verified against the input via OCR.
+
+```
+input data → template → render → verify → extract → loop
+```
+
+Each run records the template hash, data hash, verification result, and a signed URL for the PDF, so you can trace any document back to what produced it.
+
+## Features
+
+- **Two rendering engines**: HTML (Playwright) for web-native templates, Typst for native pagination and 3x smaller PDFs
+- **AI layout intelligence**: GPT-5.4 analyzes your template and optimizes page breaks, table splitting, orphan/widow prevention
+- **Closed-loop verification**: Render a PDF, OCR it with Mistral, compare every field against input data — store the score
+- **Full lineage**: Every render creates a run with template hash, data hash, verification result, and signed URL
+- **Deterministic**: Same input + template = same output. Always.
+- **Structured extraction**: Pull data from any document with schema-driven OCR
+- **Open source**: Engine, SDK, CLI, and database schema are MIT-licensed
+
+**Core Endpoints**
+
+| Feature | Description |
+|---------|-------------|
+| [**Render**](#render-a-pdf) | HTML or Typst template + data → PDF with AI layout optimization |
+| [**Verify**](#verify-a-render) | OCR a rendered PDF and compare every field against the input |
+| [**Extract**](#extract-structured-data) | Pull structured data from any document via Mistral OCR |
+
+**More**
+
+| Feature | Description |
+|---------|-------------|
+| **Async Render** | Queue long-running renders with webhook delivery |
+| **Templates** | Save, version, and reuse templates with content hashing |
+| **Template from Doc** | Upload a PDF, get an HTML or Typst template back |
+| **Idempotency** | Same `Idempotency-Key` returns the same response without re-rendering |
+| **Run Lineage** | Full audit trail — what input produced this PDF, when, with what result |
 
 ## Self-Hosting
 
@@ -169,11 +162,24 @@ Typeset is fully self-hostable. You own your data, your templates, and your rend
 ### Prerequisites
 
 - [Bun](https://bun.sh) 1.3+
-- Docker (for local Postgres + Redis)
+- Docker (for local Postgres)
 - Playwright Chromium (installed automatically)
 - Typst binary (optional, for Typst engine)
 
-### Setup
+### Local mode (no external services)
+
+The fastest way to try it. Uses SQLite (`typeset.db`), an in-memory store for rate limits and idempotency, and local file storage under `.storage/`. It seeds an org and the API key `ts_test_full_localdev0000000000000000` on first run.
+
+```bash
+git clone https://github.com/tylergibbs1/typeset.git
+cd typeset
+bun install
+cd apps/api && bun run dev:local
+```
+
+Then call `http://localhost:3000/v1/render` with that key. Set `OPENAI_API_KEY` and `MISTRAL_API_KEY` to enable AI layout and OCR verification.
+
+### Full setup
 
 ```bash
 git clone https://github.com/tylergibbs1/typeset.git
@@ -201,11 +207,14 @@ cd apps/api && bun run dev
 
 | Service | Required | Options |
 |---------|----------|---------|
-| PostgreSQL | Yes | Docker, Supabase, Neon, RDS |
-| Redis | Yes | Upstash, local Docker, ElastiCache |
-| Object Storage | Yes | Cloudflare R2, S3, MinIO |
-| OpenAI API | Optional | For AI layout engine |
-| Mistral API | Optional | For OCR verification + extraction |
+| PostgreSQL | Yes | Docker, Supabase, Neon, RDS (`DATABASE_URL`) |
+| Redis | Yes | Upstash Redis REST API (`UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`) |
+| Object Storage | Optional | Cloudflare R2 (`R2_*`); falls back to local `.storage/` when `R2_ACCESS_KEY_ID` is unset |
+| Trigger.dev | Optional | For async render, verify, and webhooks (`TRIGGER_SECRET_KEY`, `TRIGGER_PROJECT_REF`) |
+| OpenAI API | Optional | For AI layout engine (`OPENAI_API_KEY`) |
+| Mistral API | Optional | For OCR verification + extraction (`MISTRAL_API_KEY`) |
+
+See [`apps/api/.env.example`](apps/api/.env.example) for the full list.
 
 ### Docker
 
@@ -213,8 +222,6 @@ cd apps/api && bun run dev
 docker build -t typeset-api -f apps/api/Dockerfile .
 docker run -p 3000:3000 --env-file apps/api/.env typeset-api
 ```
-
----
 
 ## Architecture
 
@@ -227,8 +234,7 @@ typeset/
 ├── apps/
 │   ├── api/           # Hono + Bun API server
 │   ├── worker/        # Trigger.dev background tasks (render, verify, webhook)
-│   ├── cli/           # typeset CLI
-│   └── docs/          # Documentation site (Fumadocs)
+│   └── cli/           # typeset CLI
 └── scripts/           # Seed, test suites
 ```
 
@@ -249,8 +255,6 @@ typeset/
 | Validation | Zod |
 | Testing | bun:test |
 
----
-
 ## API Reference
 
 | Method | Endpoint | Description |
@@ -262,13 +266,10 @@ typeset/
 | `POST` | `/v1/extract` | Extract structured data via OCR |
 | `POST` | `/v1/templates` | Save a template |
 | `GET` | `/v1/templates` | List templates |
+| `GET` | `/v1/templates/:id` | Get a template |
 | `POST` | `/v1/template-from-doc` | Generate template from existing document |
 
 All responses follow [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) error format. Every response includes `X-Request-Id`, rate limit headers, and `Typeset-Version`.
-
-Full API documentation: [docs](apps/docs/)
-
----
 
 ## Testing
 
@@ -288,8 +289,6 @@ MISTRAL_API_KEY=... bun scripts/closed-loop-test.ts
 # Realistic document tests — invoices, offer letters, NDAs, financial reports (9 tests)
 MISTRAL_API_KEY=... bun scripts/realistic-test.ts
 ```
-
----
 
 ## Contributing
 
@@ -311,8 +310,6 @@ Run tests before submitting:
 ```bash
 bun test
 ```
-
----
 
 ## License
 
